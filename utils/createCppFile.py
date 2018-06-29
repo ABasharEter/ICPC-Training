@@ -41,7 +41,7 @@ def no_params():
     while(problem_name == ""):
         print("You have to enter a problem name: ")
         problem_name = input()
-    print("Enter online judge name: (ex. codeforces or cf")
+    print("Enter online judge name: (ex. codeforces or cf)")
     oj_name = input()
     while(problem_name == ""):
         print("You have to enter a problem name: ")
