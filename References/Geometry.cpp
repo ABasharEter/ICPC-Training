@@ -28,6 +28,7 @@ ptype area2(PT a, PT b, PT c) { return cross(a,b) + cross(b,c) + cross(c,a); }
 
 ostream &operator<<(ostream &os, const PT &p) {
   os << "(" << p.x << "," << p.y << ")";
+  return os;
 }
 
 // rotate a point CCW or CW around the origin
@@ -117,11 +118,11 @@ PT ComputeCircleCenter(PT a, PT b, PT c) {
 // tests for checking point on polygon boundary
 bool PointInPolygon(const vector<PT> &p, PT q) {
   bool c = 0;
-  for (int i = 0; i < p.size(); i++){
+  for (size_t i = 0; i < p.size(); i++){
     int j = (i+1)%p.size();
-    if ((p[i].y <= q.y && q.y < p[j].y ||
-      p[j].y <= q.y && q.y < p[i].y) &&
-      q.x < p[i].x + (p[j].x - p[i].x) * (q.y - p[i].y) / (p[j].y - p[i].y))
+    if ((p[i].y <= q.y && q.y < p[j].y || p[j].y <= q.y && q.y < p[i].y) &&
+      (q.x < (p[i].x + (p[j].x - p[i].x) * (q.y - p[i].y) / (p[j].y - p[i].y)))
+      )
       c = !c;
   }
   return c;
@@ -129,10 +130,10 @@ bool PointInPolygon(const vector<PT> &p, PT q) {
 
 // determine if point is on the boundary of a polygon
 bool PointOnPolygon(const vector<PT> &p, PT q) {
-  for (int i = 0; i < p.size(); i++)
+  for (size_t i = 0; i < p.size(); i++)
     if (dist2(ProjectPointSegment(p[i], p[(i+1)%p.size()], q), q) < EPS)
       return true;
-    return false;
+  return false;
 }
 
 // compute intersection of line through points a and b with
@@ -173,7 +174,7 @@ vector<PT> CircleCircleIntersection(PT a, PT b, ptype r, ptype R) {
 // the "center of gravity" or "center of mass".
 ptype ComputeSignedArea(const vector<PT> &p) {
   ptype area = 0;
-  for(int i = 0; i < p.size(); i++) {
+  for(size_t i = 0; i < p.size(); i++) {
     int j = (i+1) % p.size();
     area += p[i].x*p[j].y - p[j].x*p[i].y;
   }
@@ -187,7 +188,7 @@ ptype ComputeArea(const vector<PT> &p) {
 PT ComputeCentroid(const vector<PT> &p) {
   PT c(0,0);
   ptype scale = 6.0 * ComputeSignedArea(p);
-  for (int i = 0; i < p.size(); i++){
+  for (size_t i = 0; i < p.size(); i++){
     int j = (i+1) % p.size();
     c = c + (p[i]+p[j])*(p[i].x*p[j].y - p[j].x*p[i].y);
   }
@@ -196,10 +197,10 @@ PT ComputeCentroid(const vector<PT> &p) {
 
 // tests whether or not a given polygon (in CW or CCW order) is simple
 bool IsSimple(const vector<PT> &p) {
-  for (int i = 0; i < p.size(); i++) {
-    for (int k = i+1; k < p.size(); k++) {
-      int j = (i+1) % p.size();
-      int l = (k+1) % p.size();
+  for (size_t i = 0; i < p.size(); i++) {
+    for (size_t k = i+1; k < p.size(); k++) {
+      size_t j = (i+1) % p.size();
+      size_t l = (k+1) % p.size();
       if (i == l || j == k) continue;
       if (SegmentsIntersect(p[i], p[j], p[k], p[l]))
         return false;
@@ -219,7 +220,7 @@ void ConvexHull(vector<PT> &pts) {
   sort(pts.begin(), pts.end());
   pts.erase(unique(pts.begin(), pts.end()), pts.end());
   vector<PT> up, dn;
-  for (int i = 0; i < pts.size(); i++) {
+  for (size_t i = 0; i < pts.size(); i++) {
     while (up.size() > 1 && area2(up[up.size()-2], up.back(), pts[i]) >= 0) up.pop_back();
     while (dn.size() > 1 && area2(dn[dn.size()-2], dn.back(), pts[i]) <= 0) dn.pop_back();
     up.push_back(pts[i]);
@@ -233,7 +234,7 @@ void ConvexHull(vector<PT> &pts) {
   dn.clear();
   dn.push_back(pts[0]);
   dn.push_back(pts[1]);
-  for (int i = 2; i < pts.size(); i++) {
+  for (size_t i = 2; i < pts.size(); i++) {
     if (between(dn[dn.size()-2], dn[dn.size()-1], pts[i])) dn.pop_back();
     dn.push_back(pts[i]);
   }
