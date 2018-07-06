@@ -24,7 +24,7 @@ def read__references():
         for file in os.listdir(ReferencesDirectory):
             filename, file_extension = os.path.splitext(file)
             file_extension = file_extension.lower()
-            if(file_extension == 'cpp'):
+            if(file_extension == '.cpp'):
                 try:
                     with open(os.path.join(ReferencesDirectory,file) , 'r') as file_content:
                         code_text += "// content of {0} reference\n".format(filename)
